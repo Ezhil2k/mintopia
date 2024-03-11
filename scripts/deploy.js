@@ -7,10 +7,8 @@ async function main() {
 
   await mintopia.waitForDeployment();
 
-
-  console.log("Mintopia contract deployed to:", mintopia.target);
+  console.log("mintopia contract deployed to:", mintopia.target);
 }
-
 
 main()
   .then(() => process.exit(0))

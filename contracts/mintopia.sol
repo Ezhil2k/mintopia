@@ -9,6 +9,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract mintopia is ERC721, ERC721URIStorage, Ownable {
     uint256 private _nextTokenId;
     mapping(string => uint8) existingURIs;
+    uint256 counter = 0;
 
     constructor()
         ERC721("DewstarNFT", "DNFT")
@@ -48,6 +49,9 @@ contract mintopia is ERC721, ERC721URIStorage, Ownable {
         return existingURIs[uri] == 1;
     }
 
+    function count() public view returns(uint256) {
+        return counter;
+    }
     function payToMint(
         address recipient,
         string memory metadataURI
@@ -61,7 +65,7 @@ contract mintopia is ERC721, ERC721URIStorage, Ownable {
 
         _mint(recipient, newItemId);
         _setTokenURI(newItemId, metadataURI);
-
+        counter += 1;
         return newItemId;
     }
 

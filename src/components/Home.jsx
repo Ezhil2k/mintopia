@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import mintopia from '../artifacts/contracts/mintopia.sol/mintopia.json';
 
-const contractAddress = 'YOUR_DEPLOYED_CONTRACT_ADDRESS';
+const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
 
-const provider = new ethers.providers.Web3Provider(window.ethereum);
+const provider = new ethers.BrowserProvider(window.ethereum);
 
 // get the end user
-const signer = provider.getSigner();
+const signer = await provider.getSigner();
 
 // get the smart contract
 const contract = new ethers.Contract(contractAddress, mintopia.abi, signer);
@@ -24,7 +24,8 @@ function Home() {
 
     const getCount = async () => {
         const count = await contract.count();
-        console.log(parseInt(count));
+        // const count = 1;
+        console.log("the count is ",parseInt(count));
         setTotalMinted(parseInt(count));
     };
 
@@ -44,7 +45,7 @@ function Home() {
 }
 
 function NFTImage({ tokenId, getCount }) {
-    const contentId = 'PINATA_CONTENT_ID';
+    const contentId = 'QmdMVVSzy2zALppnMPcDEH9mTwys2zJpJDHdpYqGe3YKdW';
     const metadataURI = `${contentId}/${tokenId}.json`;
     const imageURI = `https://gateway.pinata.cloud/ipfs/${contentId}/${tokenId}.png`;
 
@@ -63,7 +64,7 @@ function NFTImage({ tokenId, getCount }) {
         const connection = contract.connect(signer);
         const addr = connection.address;
         const result = await contract.payToMint(addr, metadataURI, {
-            value: ethers.utils.parseEther('0.05'),
+            value: ethers.parseEther('0.05'),
         });
 
         await result.wait();
