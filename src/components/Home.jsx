@@ -5,6 +5,9 @@ import { ethers } from 'ethers';
 import mintopia from '../artifacts/contracts/mintopia.sol/mintopia.json';
 
 const contractAddress = '0x5FbDB2315678afecb367f032d93F642f64180aa3';
+// const contractAddress = '0x2a3bEFfbaE1A8DF307d653BBfe8E0d7579864667';
+
+
 
 const provider = new ethers.BrowserProvider(window.ethereum);
 
@@ -23,6 +26,7 @@ function Home() {
     }, []);
 
     const getCount = async () => {
+        console.log("ABOUT TO CALL COUNT");
         const count = await contract.count();
         // const count = 1;
         console.log("the count is ",parseInt(count));
@@ -30,22 +34,23 @@ function Home() {
     };
 
     return (
-        <div>
-            <WalletBalance />
+<div style={{ display: 'flex', flexWrap: 'wrap',justifyContent:'space-between'}}>
+    <div style={{width: '100%'}}><WalletBalance /></div>
+    
 
-            {Array(totalMinted + 1)
-                .fill(0)
-                .map((_, i) => (
-                    <div key={i}>
-                        <NFTImage tokenId={i} getCount={getCount} />
-                    </div>
-                ))}
-        </div>
+    {Array(totalMinted + 1)
+        .fill(1)
+        .map((_, i) => (
+            <div key={i} style={{ flex: '0 0 auto', margin: '40px', width: '230px' }}>
+                <NFTImage tokenId={i} getCount={getCount} />
+            </div>
+        ))}
+</div>
     );
 }
 
 function NFTImage({ tokenId, getCount }) {
-    const contentId = 'QmdMVVSzy2zALppnMPcDEH9mTwys2zJpJDHdpYqGe3YKdW';
+    const contentId = 'QmRVUVKA1qPWButmtZs658rX4akZUEHqihEHK1p6fKtAPJ';
     const metadataURI = `${contentId}/${tokenId}.json`;
     const imageURI = `https://gateway.pinata.cloud/ipfs/${contentId}/${tokenId}.png`;
 
@@ -55,19 +60,23 @@ function NFTImage({ tokenId, getCount }) {
     }, [isMinted]);
 
     const getMintedStatus = async () => {
+        console.log("ABOUT TO CALL ISCONTENT OWNED");
         const result = await contract.isContentOwned(metadataURI);
+        contract.isContentOwned
         console.log(result)
         setIsMinted(result);
     };
 
     const mintToken = async () => {
         const connection = contract.connect(signer);
-        const addr = connection.address;
+        const addr = signer.getAddress(); //retunrs the address
+        console.log("calling the payToMint");
         const result = await contract.payToMint(addr, metadataURI, {
             value: ethers.parseEther('0.05'),
         });
-
+        console.log("awaiting result");
         await result.wait();
+        console.log("got the result");
         getMintedStatus();
         getCount();
     };
@@ -78,7 +87,7 @@ function NFTImage({ tokenId, getCount }) {
     }
     return (
         <div>
-            <img src={isMinted ? imageURI : 'img/placeholder.png'}></img>
+            <img src={isMinted ? `NFTS/${tokenId}.png` : 'img/placeholder.png'} style={{ maxWidth: '100%', height: 'auto' }} />
             <h5>ID #{tokenId}</h5>
             {!isMinted ? (
                 <button onClick={mintToken}>

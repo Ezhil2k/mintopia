@@ -14,9 +14,9 @@ function WalletBalance() {
     };
   
     return (
-      <div>
-          <h5>Your Balance: {balance}</h5>
-          <button onClick={() => getBalance()}>Show My Balance</button>
+      <div style={{display:'flex', justifyContent: 'center', alignItems: 'center'}}>
+          <div style={{marginRight:'15px'}}><h2 >Your Balance : {balance}</h2></div>
+          <div><button onClick={() => getBalance()}>Show My Balance</button></div>
       </div>
     );
   };
